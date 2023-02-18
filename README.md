@@ -1,2 +1,2 @@
 # Youtube-Transcript-Summarizer
-Built a AI model that spot a relevant information from youtube videos and provide us a short summary of whole video in the form of text file and audio file.
+Built an AI model that detects relevant information in YouTube videos and provides us with a brief summary of the entire video in the form of a text file and an audio file in 5 different languages. This entire project was designed using a Open-AI & Hugging Face Transformer Model and several APIs.
