@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Youtube Video Summarizer</title>
+
+    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+    <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+</head>
+<style>
+    pre {
+        word-break: break-all;
+        white-space: normal;
+    }
+</style>
+
+<body>
+    <nav class="navbar navbar-dark bg-primary">
+        <a class="navbar-brand" href="/" style="margin-left: 3%;">
+            <img alt="" class="d-inline-block align-top" height="30" src="{{url_for('static', filename='logo.png')}}"
+                width="30">
+            Youtube Video Summarizer
+        </a>
+    </nav>
+    <div style="padding: 8%;">
+
+        <form action="/" class=" form-inline" class="ytform" enctype="multipart/form-data" method="POST"
+            onsubmit="displayLoading()">
+            <div class="row">
+                <div class="col col-md-10">
+                    <div>
+                        <label for="ytlink">
+                            <h4>Enter youtube video link:</h4>
+                        </label>
+                        <input autofocus="autofocus" class="form-control form-control-lg" id="ytlink" name="ytlink"
+                            placeholder="Paste link here" type="text">
+                    </div>
+                </div>
+                <div class="col col-md-2" style="margin-top: 3%; float: right;">
+                    <button class="btn btn-primary btn-lg mb-2" id="summarizeBtn" type="submit">Summarize</button>
+                </div>
+            </div>
+        </form>
+        <h3 class="text-center" id="loadingText" style="display:none; margin-top :5%;">Loading... Please Wait</h3>
+        {% if summary %}
+
+        <div class="row" style="margin-bottom: 2%; margin-top: 5%;">
+            <div class="col col-md-4">
+                <h4>Summary:</h4>
+            </div>
+            <div class="col col-8">
+                <form action="/translate" class="form-inline" enctype="multipart/form-data" class="ytform" method="POST"
+                    onsubmit="displayLoading()">
+                    <select class="form-group form-control-lg" style="width:40%" id="to_translate" name="to_translate">
+                        <option hidden selected>Select Language</option>
+                        <option value="hi">Hindi</option>
+                        <option value="gu">Gujarati</option>
+                        <option value="bn">Bengali</option>
+                        <option value="fr">French</option>
+                        <option value="de">German</option>
+                    </select>
+
+                    <button class="form-group btn btn-warning btn-lg mb-2 ml-2" id="translateBtn"
+                        type="submit">Translate
+                    </button>
+
+                    <button class="form-group btn btn-success btn-lg mb-2 ml-2" id="exportBtn"
+                        onclick="saveInnerHTMLToTextFile('summaryText')" type="button">Export Summary
+                    </button>
+                </form>
+            </div>
+        </div>
+        </h4>
+
+
+        <div style="padding:1%; border: 2px solid grey;">
+            <pre id="summaryText">{{summary}}</pre>
+        </div>
+        {% if audio %}
+        <audio controls >
+            <source src="{{url_for('static', filename='voice.mp3')}}" type="audio/mpeg" >
+        </audio>
+        {% endif %}
+
+        {% if translated_audio %}
+        <audio controls >
+            <source src="{{url_for('static', filename='voice.mp3')}}" type="audio/mpeg" >
+        </audio>
+        {% endif %}
+    </div>
+    {% endif %}
+    </div>
+</body>
+
+<script>
+    function displayLoading() {
+        document.getElementById("loadingText").style.display = "block"
+    }
+
+    function saveInnerHTMLToTextFile(elementId) {
+        var text = document.getElementById(elementId).innerHTML;
+        var filename = "Summary.txt";
+        var blob = new Blob([text], { type: "text/plain" });
+
+        if (window.navigator.msSaveOrOpenBlob) {
+            window.navigator.msSaveBlob(blob, filename);
+        } else {
+            var elem = window.document.createElement("a");
+            elem.href = window.URL.createObjectURL(blob);
+            elem.download = filename;
+            document.body.appendChild(elem);
+            elem.click();
+            document.body.removeChild(elem);
+        }
+    }
+
+</script>
+
+</html>
